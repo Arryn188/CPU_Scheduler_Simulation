@@ -16,34 +16,17 @@ void Simulation::run(std::string &file) {
 		const Event* event = events.top();
 		events.pop();
 
-		// Find the starting and ending points of the simulation iteratively
-		updateStartandEnd(event);
 
-		// Invoke appropriate method for each event
-		switch(event->get_type()) {
-			case Event::THREAD_ARRIVED:
-				handle_thread_arrived(event); break;
-			case Event::DISPATCHER_INVOKED:
-				handle_dispatcher_invoked(event); break;
-			case Event::THREAD_DISPATCH_COMPLETED:
-			case Event::PROCESS_DISPATCH_COMPLETED:
-				handle_dispatch_completed(event); break;
-			case Event::THREAD_PREEMPTED:
-				handle_thread_preempted(event); break;
-			case Event::CPU_BURST_COMPLETED:
-				handle_cpu_burst_completed(event); break;
-			case Event::IO_BURST_COMPLETED:
-				handle_io_burst_completed(event); break;
-			case Event::THREAD_COMPLETED:
-				handle_thread_completed(event); break;
-		}
+        std::cout << "At time " <<event->get_time() << ":" << std::endl;
+        std::cout << event->get_type_name(event->get_type())<< std::endl;
+        std::cout << "thread " << event->thread->get_id() + 1 << " in process " << event->thread->process->get_pid()<< " "<<event->thread->process->get_type_name(event->thread->process->get_type()) <<std::endl;
+        std::cout << std::endl;
 
-		// Free event
 		delete event;
 	}
 
 	// Print simulation statistics
-	printStatistics();
+	//printStatistics();
 }
 
 // handle_thread_arrived handles the THREAD_ARRIVED event in the event queue

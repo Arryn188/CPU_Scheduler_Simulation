@@ -13,7 +13,7 @@ Scheduler* getScheduler(std::string &algorithm);
 
 int main(int argc, char** argv) {
 	// Containers for command line options
-	bool perThreadOutput(false), verboseOutput(false), colorOutput(false);
+	bool perThreadOutput(false), verboseOutput(true), colorOutput(false);
 	std::string algorithm, simulationFile;
 
 	// Parse command line options using getoptlong

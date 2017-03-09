@@ -14,12 +14,12 @@ void Logger::print_state_transition(const Event* event, Thread::State before_sta
 
 // If verbose is true, prints a dispatcher invoked custom message
 void Logger::print_dispatch_invoked_message(const Event* event, Thread *thread, std::string message) {
-	if (verbose) {
+	//if (verbose) {
 		std::cout << (color ? YEL : "") << "At time " << event->get_time() << ":" << (color ? RST : "") << std::endl
 			 << "\t" << Event::get_type_name(event->get_type()) << std::endl
 			 << "\t" << "Thread " << (color ? GRN : "") << thread->get_id() << (color ? RST : "") << " in process " << (color ? GRN : "") << thread->process->get_pid() << (color ? RST : "")
 			 << (color ? YEL : "") << " [" << Process::get_type_name(thread->process->get_type()) << "]" << (color ? RST : "") << std::endl << "\t" << message << std::endl << std::endl;
-	}
+	//}
 }
 
 // if per_thread is true, prints information about a process and its threads
