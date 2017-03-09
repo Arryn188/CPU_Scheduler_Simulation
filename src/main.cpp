@@ -5,17 +5,17 @@
 #include <iostream>
 
 // Function prototypes
-void parseOptions(int argc, char** argv, bool* perThread, bool* verbose, bool* color, std::string *algorithm, std::string* simFile);
+void parseOptions(int argc, char** argv, bool* perThread, bool* verbose,std::string *algorithm, std::string* simFile);
 Scheduler* getScheduler(std::string &algorithm);
 
 int main(int argc, char** argv) {
 
-	bool perThreadOutput(false), verboseOutput(true), colorOutput(false);
+	bool perThreadOutput(false), verboseOutput(true);
 	std::string algorithm, simulationFile;
 
-	parseOptions(argc, argv, &perThreadOutput, &verboseOutput, &colorOutput, &algorithm, &simulationFile);
+	parseOptions(argc, argv, &perThreadOutput, &verboseOutput, &algorithm, &simulationFile);
 
-	Print_opts* print_opts = new Print_opts(verboseOutput, perThreadOutput, colorOutput);
+	Print_opts* print_opts = new Print_opts(verboseOutput, perThreadOutput);
 
 	// Default to FCFS algorithm if none is specified
 	if (algorithm.empty())
@@ -44,13 +44,12 @@ int main(int argc, char** argv) {
 }
 
 // parseOptions parses the command line options using getoptlong
-void parseOptions(int argc, char** argv, bool* perThread, bool* verbose, bool *color, std::string *algorithm, std::string* simFile) {
+void parseOptions(int argc, char** argv, bool* perThread, bool* verbose, std::string *algorithm, std::string* simFile) {
 	// Long option definitions
 	static struct option long_options[] = {
 	    {"per-thread",       no_argument, NULL, 't'},
 	    {   "verbose",       no_argument, NULL, 'v'},
 	    { "algorithm", required_argument, NULL, 'a'},
-	    {     "color",       no_argument, NULL, 'c'},
 	    {      "help",       no_argument, NULL, 'h'},
 	    {           0,                 0,    0,   0}
   	};
@@ -79,10 +78,6 @@ void parseOptions(int argc, char** argv, bool* perThread, bool* verbose, bool *c
 		case 'a':
 			*algorithm = std::string(optarg); break;
 
-		// Colorized Output
-		case 'c':
-			*color = true; break;
-
 		// Print Help
 		case 'h':
 			std::cout << "Simulator v1.0 -- by Ryan Hunt" << std::endl << std::endl
@@ -90,7 +85,6 @@ void parseOptions(int argc, char** argv, bool* perThread, bool* verbose, bool *c
 				 << "	-t, --per_thread			Output additional per-thread statistics for arrival time, service time, etc." << std::endl
 				 << "	-v, --verbose 				Output information about every state-changing event and scheduling decision." << std::endl
 				 << "	-a, --algorithm				The scheduling algorithm to use. One of FCFS, RR, PRIORITY, or CUSTOM." << std::endl
-			 	 << "	-c, --color				Display statistics with color highlighting." << std::endl
 				 << "	-h, --help 				Display a help message about these flags and exit." << std::endl;
 			exit(0);
 
