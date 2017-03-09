@@ -1,8 +1,5 @@
 #include "simulation.h"
 #include "fcfsscheduler.h"
-#include "rrscheduler.h"
-#include "priorityscheduler.h"
-#include "customscheduler.h"
 #include <getopt.h>
 #include <string> 
 #include <iostream>
@@ -132,20 +129,6 @@ Scheduler* getScheduler(std::string &algorithm) {
 	// First Come, First Serve Scheduler
 	if (algorithm == "FCFS")
 		return new FCFSScheduler();
-
-	// Round Robin Scheduler
-	else if (algorithm == "RR")
-		return new RRScheduler();
-
-	// Priority Scheduler
-	else if (algorithm == "PRIORITY")
-		return  new PriorityScheduler();
-
-	// Custom Scheduler
-	else if (algorithm == "CUSTOM")
-		return new CustomScheduler();
-
-	// Invalid Nmme -- Return NULL
 	else 
 		return NULL;
 }
