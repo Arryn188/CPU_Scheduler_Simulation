@@ -1,9 +1,9 @@
 #include "simulation.h"
 
 // Constructor
-Simulation::Simulation(Scheduler *scheduler, Logger *logger) {
+Simulation::Simulation(Scheduler *scheduler, Print_opts *print_opts) {
 	this->scheduler = scheduler;
-	this->logger = logger;
+	this->print_opts = print_opts;
 }
 
 void Simulation::run(std::string &file) {

@@ -9,15 +9,13 @@ void parseOptions(int argc, char** argv, bool* perThread, bool* verbose, bool* c
 Scheduler* getScheduler(std::string &algorithm);
 
 int main(int argc, char** argv) {
-	// Containers for command line options
+
 	bool perThreadOutput(false), verboseOutput(true), colorOutput(false);
 	std::string algorithm, simulationFile;
 
-	// Parse command line options using getoptlong
 	parseOptions(argc, argv, &perThreadOutput, &verboseOutput, &colorOutput, &algorithm, &simulationFile);
 
-	// Create a logger instance
-	Logger* logger = new Logger(verboseOutput, perThreadOutput, colorOutput);
+	Print_opts* print_opts = new Print_opts(verboseOutput, perThreadOutput, colorOutput);
 
 	// Default to FCFS algorithm if none is specified
 	if (algorithm.empty())
@@ -33,13 +31,13 @@ int main(int argc, char** argv) {
 	}
 
 	// Create simulation instance
-	Simulation mySimulation(scheduler, logger);
+	Simulation mySimulation(scheduler, print_opts);
 
 	// Run simulation event loop
 	mySimulation.run(simulationFile);
 
 	// Clean-up Allocated Memory
-	delete logger;
+	delete print_opts;
 
 	// Exit
 	return 0;
