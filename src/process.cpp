@@ -1,3 +1,6 @@
+//
+// Created by remay on 3/9/17.
+//
 #include "process.h"
 
 std::string Process::TypeArray[] = {

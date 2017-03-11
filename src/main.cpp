@@ -1,3 +1,6 @@
+//
+// Created by remay on 3/9/17.
+//
 #include "simulation.h"
 #include "fcfsscheduler.h"
 #include <getopt.h>
@@ -63,7 +66,7 @@ void parseOptions(int argc, char** argv, bool* perThread, bool* verbose, string 
 			*algorithm = std::string(optarg); break;
 
 		case 'h':
-			std::cout << "Simulator by Becca May" << std::endl << std::endl
+			std::cout << "CSCI442 Simulator by Becca May" << std::endl << std::endl
 				 << "Usage: ./simulator [flags] [simulation_file]" << std::endl << std::endl
 				 << "	-t, --per_thread			Output additional per-thread statistics for arrival time, service time, etc." << endl
 				 << "	-v, --verbose 				Output information about every state-changing event and scheduling decision." << endl

@@ -1,8 +1,10 @@
+//
+// Created by remay on 3/9/17.
+//
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 #include "event.h"
 
-// Base Class for all Scheduling Algorithms
 class Scheduler {
 
 public:

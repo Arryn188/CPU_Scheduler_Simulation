@@ -1,3 +1,6 @@
+//
+// Created by remay on 3/9/17.
+//
 #include "fcfsscheduler.h"
 
 Decision* FCFSScheduler::get_next_thread(const Event* event) {
