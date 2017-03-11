@@ -4,6 +4,8 @@
 #include "thread.h"
 #include <string>
 
+using namespace std;
+
 class Decision {
 public:
 
@@ -17,7 +19,7 @@ public:
 		return time_slice;
 	}
 
-	std::string get_explanation() {
+	string get_explanation() {
 		return explanation;
 	}
 
@@ -27,7 +29,7 @@ private:
 
 	unsigned int time_slice = -1;
 
-	std::string explanation;
+	string explanation;
 };
 
 #endif

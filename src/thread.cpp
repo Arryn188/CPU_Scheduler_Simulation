@@ -3,15 +3,14 @@
 //
 
 #include "thread.h"
+using namespace std;
 
-std::string Thread::StateArray[] = {
-	"NEW", "READY", "RUNNING", "BLOCKED", "EXIT"
-};
+string Thread::StateArray[] = {"NEW", "READY", "RUNNING", "BLOCKED", "EXIT"};
 
 Thread::Thread(int id, Process* parent, unsigned int arrival_time) {
 	this->id = id;
 	this->process = parent;
-	this->arrival_time = arrival_time;
+	this->arr_time = arrival_time;
 }
 
 int Thread::get_id() {
@@ -19,44 +18,43 @@ int Thread::get_id() {
 }
 
 void Thread::set_ready(unsigned int time) {
-	previous_state = current_state;
-	current_state = State::READY;
+	prev_state = curr_state;
+	curr_state = State::READY;
 
-	if (previous_state == State::RUNNING || previous_state == State::BLOCKED) {
-		updateCounters(time);
+	if (prev_state == State::RUNNING || prev_state == State::BLOCKED) {
+		do_update(time);
 	}
 	last_state_change = time;
 }
 
 unsigned int Thread::set_running(unsigned int time) {
-	previous_state = current_state;
-	current_state = State::RUNNING;
+	prev_state = curr_state;
+	curr_state = State::RUNNING;
 
-	if (start_time == -1)
-		start_time = time;
+	if (s_time == -1) {
+		s_time = time;
+	}
 
 	last_state_change = time;
-
 	return bursts.front()->get_length();
 }
 
 unsigned int Thread::set_blocked(unsigned int time) {
-	updateCounters(time);
-	if (bursts.size() == 0)
+	do_update(time);
+	if (bursts.size() == 0) {
 		return -1;
-	previous_state = current_state;
-	current_state = State::BLOCKED;
+	}
+	prev_state = curr_state;
+	curr_state = State::BLOCKED;
 
 	last_state_change = time;
 	return bursts.front()->get_length();
 }
 
 void Thread::set_finished(unsigned int time) {
-	previous_state = current_state;
-	current_state = State::EXIT;
-
-	end_time = time;
-
+	prev_state = curr_state;
+	curr_state = State::EXIT;
+	e_time = time;
 	last_state_change = time;
 }
 
@@ -64,7 +62,7 @@ void Thread::pushBurst(Burst* burst) {
 	bursts.push(burst);
 }
 unsigned int Thread::get_arrival_time() {
-	return arrival_time;
+	return arr_time;
 }
 
 unsigned int Thread::get_service_time() {
@@ -76,23 +74,23 @@ unsigned int Thread::get_io_time() {
 }
 
 unsigned int Thread::get_end_time() {
-	return end_time;
+	return e_time;
 }
 
 unsigned int Thread::get_response_time() {
-	return start_time - arrival_time;
+	return s_time - arr_time;
 }
 
 unsigned int Thread::get_turnaround_time() {
-	return end_time - arrival_time;
+	return e_time - arr_time;
 }
 
-std::string Thread::get_state_name(Thread::State state) {
-	return StateArray[state];
+string Thread::get_state_name(Thread::State thread_state) {
+	return StateArray[thread_state];
 }
 
 
-void Thread::updateCounters(unsigned int time) {
+void Thread::do_update(unsigned int time) {
 	Burst *burst = bursts.front();
 
 	if (burst->get_length() <= time - last_state_change) {

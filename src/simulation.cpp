@@ -3,20 +3,17 @@
 //
 #include "simulation.h"
 
+using namespace std;
 
-// Constructor
 Simulation::Simulation(Scheduler *scheduler, Print_opts *print_opts) {
 	this->scheduler = scheduler;
 	this->print_opts = print_opts;
 }
 
 void Simulation::run(std::string &file) {
-	// Populate the event queue
-	parseFile(file);
+    fileIn(file);
 
-	// Run event loop while event queue isn't empty
 	while (!events.empty()) {
-		// Get top element of queue
 		const Event* event = events.top();
 		events.pop();
 
@@ -28,50 +25,64 @@ void Simulation::run(std::string &file) {
         std::cout << std::endl;
 		*/
 
-        updateStartandEnd(event);
+        updateTimes(event);
 
         switch(event -> get_type()){
-            case Event::THREAD_ARRIVED:
-                handle_thread_arrived(event);
+            case Event::THREAD_ARRIVED: {
+                thread_arrived_update(event);
                 break;
-            case Event::DISPATCHER_INVOKED:
-                handle_dispatcher_invoked(event);
+            }
+
+            case Event::DISPATCHER_INVOKED: {
+                dispatcher_invoked_update(event);
                 break;
+            }
+
             case Event::THREAD_DISPATCH_COMPLETED:
-            case Event::PROCESS_DISPATCH_COMPLETED:
-                handle_dispatch_completed(event);
+
+            case Event::PROCESS_DISPATCH_COMPLETED: {
+                dispatch_complete_update(event);
                 break;
-            case Event::THREAD_PREEMPTED:
-                handle_thread_preempted(event);
+            }
+
+            case Event::THREAD_PREEMPTED: {
+                thread_preempted_update(event);
                 break;
-            case Event::CPU_BURST_COMPLETED:
-                handle_cpu_burst_completed(event);
+            }
+
+            case Event::CPU_BURST_COMPLETED: {
+                cpu_burst_complete_update(event);
                 break;
-            case Event::IO_BURST_COMPLETED:
-                handle_io_burst_completed(event);
+            }
+
+            case Event::IO_BURST_COMPLETED: {
+                io_burst_complete_update(event);
                 break;
-            case Event::THREAD_COMPLETED:
-                handle_thread_completed(event);
+            }
+
+            case Event::THREAD_COMPLETED: {
+                thread_complete_update(event);
                 break;
+            }
         }
 
 		delete event;
 	}
 
-    printStatistics();
+    printStats();
 }
 
-void Simulation::handle_thread_arrived(const Event *event) {
+void Simulation::thread_arrived_update(const Event *event) {
     event -> thread -> set_ready(event->get_time());
     scheduler->enqueue(event, event->thread);
 
     if(!currentThread){
         events.push(new Event(Event::Type::DISPATCHER_INVOKED, event -> get_time(), NULL, NULL));
     }
-    print_opts->print_state_transition(event, Thread::State::NEW, Thread::State::READY);
+    print_opts->transitions(event, Thread::State::NEW, Thread::State::READY);
 }
 
-void Simulation::handle_dispatcher_invoked(const Event *event) {
+void Simulation::dispatcher_invoked_update(const Event *event) {
     Decision *decision = scheduler->get_next_thread(event);
     if(!decision->thread){
         return;
@@ -88,10 +99,10 @@ void Simulation::handle_dispatcher_invoked(const Event *event) {
         dispatch_time += process_switch_overhead;
     }
 
-    print_opts -> print_dispatch_invoked_message(event, decision -> thread, decision -> get_explanation());
+    print_opts->dispatcher(event, decision->thread, decision->get_explanation());
 }
 
-void Simulation::handle_dispatch_completed(const Event *event) {
+void Simulation::dispatch_complete_update(const Event *event) {
     int burst_length = event -> thread -> set_running(event ->get_time());
     int sl_length = event -> get_decision() -> get_slice();
 
@@ -102,10 +113,10 @@ void Simulation::handle_dispatch_completed(const Event *event) {
         events.push(new Event(Event::Type::CPU_BURST_COMPLETED, event -> get_time() + burst_length, event -> thread, NULL));
     }
 
-    print_opts -> print_state_transition(event, Thread::State::READY, Thread::State::RUNNING);
+    print_opts->transitions(event, Thread::State::READY, Thread::State::RUNNING);
 }
 
-void Simulation::handle_thread_preempted(const Event *event) {
+void Simulation::thread_preempted_update(const Event *event) {
     event->thread->set_ready(event->get_time());
     scheduler->enqueue(event, event->thread);
     previousThread = currentThread;
@@ -115,10 +126,10 @@ void Simulation::handle_thread_preempted(const Event *event) {
         events.push(new Event(Event::Type::DISPATCHER_INVOKED, event->get_time(), NULL, NULL));
     }
 
-    print_opts -> print_state_transition(event, Thread::State::RUNNING, Thread::State::READY);
+    print_opts->transitions(event, Thread::State::RUNNING, Thread::State::READY);
 }
 
-void Simulation::handle_cpu_burst_completed(const Event *event) {
+void Simulation::cpu_burst_complete_update(const Event *event) {
     int burst_length = event -> thread -> set_blocked(event -> get_time());
 
     if (burst_length == -1){
@@ -135,10 +146,10 @@ void Simulation::handle_cpu_burst_completed(const Event *event) {
         events.push(new Event(Event::Type::DISPATCHER_INVOKED, event -> get_time(), NULL, NULL));
     }
 
-    print_opts -> print_state_transition(event, Thread::State::RUNNING, Thread::State::BLOCKED);
+    print_opts->transitions(event, Thread::State::RUNNING, Thread::State::BLOCKED);
 }
 
-void Simulation::handle_io_burst_completed(const Event *event) {
+void Simulation::io_burst_complete_update(const Event *event) {
     event -> thread -> set_ready(event -> get_time());
     scheduler -> enqueue(event, event -> thread);
 
@@ -146,10 +157,10 @@ void Simulation::handle_io_burst_completed(const Event *event) {
         events.push(new Event(Event::Type::DISPATCHER_INVOKED, event -> get_time(), NULL, NULL));
     }
 
-    print_opts -> print_state_transition(event, Thread::State::BLOCKED, Thread::State::READY);
+    print_opts->transitions(event, Thread::State::BLOCKED, Thread::State::READY);
 }
 
-void Simulation::handle_thread_completed(const Event *event) {
+void Simulation::thread_complete_update(const Event *event) {
     event -> thread -> set_finished(event -> get_time());
 
     previousThread = currentThread;
@@ -159,10 +170,10 @@ void Simulation::handle_thread_completed(const Event *event) {
         events.push(new Event(Event::Type::DISPATCHER_INVOKED, event -> get_time(), NULL, NULL));
     }
 
-    print_opts -> print_state_transition(event, Thread::State::RUNNING, Thread::State::EXIT);
+    print_opts->transitions(event, Thread::State::RUNNING, Thread::State::EXIT);
 }
 
-void Simulation::parseFile(std::string &file) {
+void Simulation::fileIn(std::string &file) {
 	std::ifstream simFile(file);
 
 	if (!simFile) {
@@ -212,7 +223,7 @@ void Simulation::parseFile(std::string &file) {
 	}
 }
 
-void Simulation::updateStartandEnd(const Event *event) {
+void Simulation::updateTimes(const Event *event) {
     if(event -> get_time() > end_time){
         end_time = event->get_time();
     }
@@ -222,11 +233,11 @@ void Simulation::updateStartandEnd(const Event *event) {
     }
 }
 
-void Simulation::printStatistics() {
+void Simulation::printStats() {
     Sys_statistics sys_stats = {0};
 
-    for(std::map <int, Process*>::iterator iterate = pidMap.begin(); iterate != pidMap.end(); iterate++){
-        print_opts -> print_process_details(iterate -> second);
+    for(map <int, Process*>::iterator iterate = pidMap.begin(); iterate != pidMap.end(); iterate++){
+        print_opts->processes(iterate->second);
         Process::Type type = iterate -> second -> get_type();
         const std::vector<Thread*> threads = iterate -> second -> getThreads();
 
@@ -246,5 +257,5 @@ void Simulation::printStatistics() {
     sys_stats.cpu_util = (100.0 *(sys_stats.dispatch_time + sys_stats.service_time)) /sys_stats.elapsed_time;
     sys_stats.cpu_efficiency = (100.0 * sys_stats.service_time) / sys_stats.elapsed_time;
 
-    print_opts -> print_statistics(sys_stats);
+    print_opts->stats(sys_stats);
 }

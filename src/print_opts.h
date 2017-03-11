@@ -10,29 +10,23 @@
 #include <iomanip>
 #include <stdlib.h>
 
+using namespace std;
 
 class Print_opts {
 public:
-	Print_opts(bool verbose, bool per_thread) {
-		this->verbose = verbose;
-		this->per_thread = per_thread;
+	Print_opts(bool vb_opt, bool per_thread) {
+		verbose = vb_opt;
+		eachThread = per_thread;
 	}
 
-	void print_state_transition(const Event* event, Thread::State before_state, Thread::State after_state);
-
-	void print_dispatch_invoked_message(const Event *event, Thread *thread, std::string message);
-
-	void print_process_details(Process* process) const;
-
-	void print_statistics(Sys_statistics stats) const;
+	void transitions(const Event *event, Thread::State before_state, Thread::State after_state);
+	void dispatcher(const Event *event, Thread *thread, std::string message);
+	void processes(Process *process) const;
+	void stats(Sys_statistics stats) const;
 
 private:
-
 	bool verbose;
-
-	bool per_thread;
-
-	bool color;
+	bool eachThread;
 };
 
 #endif

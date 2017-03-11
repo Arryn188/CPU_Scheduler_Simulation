@@ -3,12 +3,8 @@
 
 class Burst {
 public:
-	// Type of Burst Enumeration
-	enum Type {
-		CPU, IO
-	};
+	enum Type {CPU, IO};
 
-	// Constructor
 	Burst(Type type, unsigned int length) {
 		this->type = type;
 		this->length = length;
@@ -27,10 +23,7 @@ public:
 	}
 
 private:
-	// Type of Burst
 	Type type;
-
-	// Length of Burst
 	unsigned int length;
 };
 

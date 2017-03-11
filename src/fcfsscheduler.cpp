@@ -2,6 +2,7 @@
 // Created by remay on 3/9/17.
 //
 #include "fcfsscheduler.h"
+using namespace std;
 
 Decision* FCFSScheduler::get_next_thread(const Event* event) {
 	Thread *nextThread = NULL;
@@ -13,7 +14,7 @@ Decision* FCFSScheduler::get_next_thread(const Event* event) {
 
 	char buffer[100];
 	sprintf(buffer, "Selected from %u threads; will run to completion of burst", (unsigned int) threads.size() + 1);
-	std::string reason = std::string(buffer);
+	string reason = string(buffer);
 
 	Decision *decision = new Decision(nextThread, -1, reason);
 	return decision;

@@ -2,10 +2,10 @@
 // Created by remay on 3/9/17.
 //
 #include "event.h"
+using namespace std;
 
-// Out-of-class Static Initializer
-std::string Event::TypeArray[] = {"THREAD_ARRIVED", "THREAD_DISPATCH_COMPLETED", "PROCESS_DISPATCH_COMPLETED", "CPU_BURST_COMPLETED", "IO_BURST_COMPLETED", "THREAD_COMPLETED", "THREAD_PREEMPTED", "DISPATCHER_INVOKED"
-};
+
+string Event::TypeArray[] = {"THREAD_ARRIVED", "THREAD_DISPATCH_COMPLETED", "PROCESS_DISPATCH_COMPLETED", "CPU_BURST_COMPLETED", "IO_BURST_COMPLETED", "THREAD_COMPLETED", "THREAD_PREEMPTED", "DISPATCHER_INVOKED"};
 
 Event::Event(Type type, unsigned int time, Thread* thread, Decision* decision) {
 	this->type = type;
@@ -31,6 +31,6 @@ const Decision* Event::get_decision() const {
 	return decision;
 }
 
-std::string Event::get_type_name(Event::Type type) {
+string Event::get_type_name(Event::Type type) {
 	return TypeArray[type];
 }
