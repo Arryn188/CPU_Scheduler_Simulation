@@ -2,49 +2,42 @@
 #include "fcfsscheduler.h"
 #include <getopt.h>
 
+using namespace std;
 
-// Function prototypes
-void parseOptions(int argc, char** argv, bool* perThread, bool* verbose,std::string *algorithm, std::string* simFile);
+void parseOptions(int argc, char** argv, bool* perThread, bool* verbose, string *algorithm, string* simFile);
 Scheduler* getScheduler(std::string &algorithm);
 
 int main(int argc, char** argv) {
 
 	bool perThreadOutput(false), verboseOutput(false);
-	std::string algorithm, simulationFile;
+	string algorithm, simulationFile;
 
 	parseOptions(argc, argv, &perThreadOutput, &verboseOutput, &algorithm, &simulationFile);
 
 	Print_opts* print_opts = new Print_opts(verboseOutput, perThreadOutput);
 
-	// Default to FCFS algorithm if none is specified
-	if (algorithm.empty())
+	if (algorithm.empty()) {
 		algorithm = "FCFS";
+	}
 
-	// Generate a scheduler instance given a scheduling algorithm name
 	Scheduler* scheduler = getScheduler(algorithm);
 
-	// Invalid scheduler name
 	if (!scheduler) {
-		std::cerr << "Invalid identifier for a scheduling algorithm: " << algorithm << std::endl;
+		cout << "User inputted incorrect algorithm name: " << algorithm << endl;
 		exit(-1);
 	}
 
-	// Create simulation instance
 	Simulation mySimulation(scheduler, print_opts);
 
-	// Run simulation event loop
 	mySimulation.run(simulationFile);
 
-	// Clean-up Allocated Memory
 	delete print_opts;
 
-	// Exit
 	return 0;
 }
 
-// parseOptions parses the command line options using getoptlong
-void parseOptions(int argc, char** argv, bool* perThread, bool* verbose, std::string *algorithm, std::string* simFile) {
-	// Long option definitions
+
+void parseOptions(int argc, char** argv, bool* perThread, bool* verbose, string *algorithm, string* simFile) {
 	static struct option long_options[] = {
 	    {"per-thread",       no_argument, NULL, 't'},
 	    {   "verbose",       no_argument, NULL, 'v'},
@@ -53,71 +46,50 @@ void parseOptions(int argc, char** argv, bool* perThread, bool* verbose, std::st
 	    {           0,                 0,    0,   0}
   	};
 
-  	// getopt loop
 	while(true) {
-		// Counter for get-opt
 		int option_index(0);
-
-		// Get next option and corresponding argument
 		int flag_char = getopt_long(argc, argv, "tva:ch", long_options, &option_index);
 
-		// No more options -> Quit
 		if (flag_char == -1) break;
 
 		switch(flag_char) {
-		// Per-Thread Statistics
 		case 't':
 			*perThread = true; break;
 
-		// Verbose Output
 		case 'v':
 			*verbose = true; break;
 
-		// Algorithm Choice
 		case 'a':
 			*algorithm = std::string(optarg); break;
 
-		// Print Help
 		case 'h':
-			std::cout << "Simulator v1.0 -- by Ryan Hunt" << std::endl << std::endl
+			std::cout << "Simulator by Becca May" << std::endl << std::endl
 				 << "Usage: ./simulator [flags] [simulation_file]" << std::endl << std::endl
-				 << "	-t, --per_thread			Output additional per-thread statistics for arrival time, service time, etc." << std::endl
-				 << "	-v, --verbose 				Output information about every state-changing event and scheduling decision." << std::endl
-				 << "	-a, --algorithm				The scheduling algorithm to use. One of FCFS, RR, PRIORITY, or CUSTOM." << std::endl
-				 << "	-h, --help 				Display a help message about these flags and exit." << std::endl;
+				 << "	-t, --per_thread			Output additional per-thread statistics for arrival time, service time, etc." << endl
+				 << "	-v, --verbose 				Output information about every state-changing event and scheduling decision." << endl
+				 << "	-a, --algorithm				The scheduling algorithm to use. One of FCFS, RR, PRIORITY, or CUSTOM." << endl
+				 << "	-h, --help 				Display a help message about these flags and exit." << endl;
 			exit(0);
-
-		// Error Case
 		case '?':
 			break;
-
-		// Unhandled Flag
 		default:
 			exit(-1);
 		}
 	}
-
-	// Parse non-option arguments
-
-	// Too many non-option arguments
 	if (optind + 1 < argc) {
-		std::cerr << "Too many non-option argument provided. Run './simulator -h' for more information." << std::endl;
+		std::cerr << "Incorrect flags" << std::endl;
 		exit(-1);
 	}
 
-	// Not enough arguments
 	if (optind >= argc) {
-		std::cerr << "Not enough non-option arguments provided (did you forget to provide a simulation file?). Run './simulator -h' for more information." << std::endl;
+		std::cerr << "Incorrect flags" << std::endl;
 		exit(-1);
 	}
 
-	// Corrent number of arguments -> Get filename
 	*simFile = std::string(argv[optind]);
 }
 
-// getScheduler returns an instance of a scheduler given the name of the algorithm, or NULL if the algorithm doesn't exist
 Scheduler* getScheduler(std::string &algorithm) {
-	// First Come, First Serve Scheduler
 	if (algorithm == "FCFS")
 		return new FCFSScheduler();
 	else 
