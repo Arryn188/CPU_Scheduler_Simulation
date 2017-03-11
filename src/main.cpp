@@ -9,7 +9,7 @@ Scheduler* getScheduler(std::string &algorithm);
 
 int main(int argc, char** argv) {
 
-	bool perThreadOutput(false), verboseOutput(true);
+	bool perThreadOutput(false), verboseOutput(false);
 	std::string algorithm, simulationFile;
 
 	parseOptions(argc, argv, &perThreadOutput, &verboseOutput, &algorithm, &simulationFile);
