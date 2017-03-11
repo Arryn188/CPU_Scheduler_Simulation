@@ -7,6 +7,7 @@
 #include "print_opts.h"
 #include "decision.h"
 #include "scheduler.h"
+#include "sys_statistics.h"
 
 
 class Simulation {

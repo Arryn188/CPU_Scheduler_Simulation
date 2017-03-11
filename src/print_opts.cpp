@@ -11,5 +11,6 @@ void Print_opts::print_process_details(Process* process) const {
 
 }
 
-//void Print_opts::print_statistics(SystemStats stats) const {
-//}
+void Print_opts::print_statistics(Sys_statistics stats) const {
+
+}

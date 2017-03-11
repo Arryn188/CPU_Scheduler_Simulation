@@ -2,6 +2,7 @@
 #define PRINT_OPTS_H
 
 #include "event.h"
+#include "sys_statistics.h"
 #include <iostream>
 #include <iomanip>
 #include <stdlib.h>
@@ -20,7 +21,7 @@ public:
 
 	void print_process_details(Process* process) const;
 
-	//void print_statistics(SystemStats stats) const;
+	void print_statistics(Sys_statistics stats) const;
 
 private:
 
