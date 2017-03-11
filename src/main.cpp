@@ -1,8 +1,7 @@
 #include "simulation.h"
 #include "fcfsscheduler.h"
 #include <getopt.h>
-#include <string> 
-#include <iostream>
+
 
 // Function prototypes
 void parseOptions(int argc, char** argv, bool* perThread, bool* verbose,std::string *algorithm, std::string* simFile);

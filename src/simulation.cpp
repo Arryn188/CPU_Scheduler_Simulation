@@ -28,46 +28,28 @@ void Simulation::run(std::string &file) {
         updateStartandEnd(event);
 
         switch(event -> get_type()){
-            case Event:: THREAD_ARRIVED: {
+            case Event::THREAD_ARRIVED:
                 handle_thread_arrived(event);
                 break;
-            }
-
-            case Event:: DISPATCHER_INVOKED:{
+            case Event::DISPATCHER_INVOKED:
                 handle_dispatcher_invoked(event);
                 break;
-            }
-
-            case Event:: PROCESS_DISPATCH_COMPLETED:{
-                handle_dispatch_completed(event):
-                break;
-            }
-
-            case Event:: THREAD_PREEMPTED:{
-                handle_thread_preempted(event);
-                break;
-            }
-
-            case Event:: CPU_BURST_COMPLETED:{
-                handle_cpu_burst_completed(event);
-                break;
-            }
-
-            case Event:: IO_BURST_COMPLETED:{
-                handle_io_burst_completed(event);
-                break;
-            }
-
-            case Event:: THREAD_DISPATCH_COMPLETED:{
+            case Event::THREAD_DISPATCH_COMPLETED:
+            case Event::PROCESS_DISPATCH_COMPLETED:
                 handle_dispatch_completed(event);
                 break;
-            }
-
-            case Event:: THREAD_COMPLETED:{
+            case Event::THREAD_PREEMPTED:
+                handle_thread_preempted(event);
+                break;
+            case Event::CPU_BURST_COMPLETED:
+                handle_cpu_burst_completed(event);
+                break;
+            case Event::IO_BURST_COMPLETED:
+                handle_io_burst_completed(event);
+                break;
+            case Event::THREAD_COMPLETED:
                 handle_thread_completed(event);
-            }
-
-
+                break;
         }
 
 		delete event;
@@ -137,7 +119,7 @@ void Simulation::handle_cpu_burst_completed(const Event *event) {
     int burst_length = event -> thread -> set_blocked(event -> get_time());
 
     if (burst_length == -1){
-        events.push(new Event(Event::Type::THREAD_COMPLETED, event -> get_time(), event -> thread, NULL);
+        events.push(new Event(Event::Type::THREAD_COMPLETED, event -> get_time(), event -> thread, NULL));
         return;
     }
 
@@ -147,17 +129,17 @@ void Simulation::handle_cpu_burst_completed(const Event *event) {
     events.push(new Event(Event::Type::IO_BURST_COMPLETED, event -> get_time() + burst_length, event -> thread, NULL));
 
     if (!currentThread){
-        events.push(new Event(Event::Type::DISPATCHER_INVOKED, event -> get_time(), NULL, NULL);
+        events.push(new Event(Event::Type::DISPATCHER_INVOKED, event -> get_time(), NULL, NULL));
     }
 
-    print_opts -> print_state_transition(event, Thread::State::Running, Thread::State::BLOCKED);
+    print_opts -> print_state_transition(event, Thread::State::RUNNING, Thread::State::BLOCKED);
 }
 
 void Simulation::handle_io_burst_completed(const Event *event) {
     event -> thread -> set_ready(event -> get_time());
     scheduler -> enqueue(event, event -> thread);
 
-    if(currentThread){
+    if(!currentThread){
         events.push(new Event(Event::Type::DISPATCHER_INVOKED, event -> get_time(), NULL, NULL));
     }
 
