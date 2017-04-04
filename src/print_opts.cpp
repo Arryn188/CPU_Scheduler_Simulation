@@ -18,7 +18,7 @@ void Print_opts::dispatcher(const Event *event, Thread *thread, std::string mess
     if (verbose){
         cout << "At time " << event -> get_time() << ":" << endl;
         cout << Event::get_type_name(event->get_type()) << endl;
-        cout << "Thread " << thread -> get_id() + 1  << " in process " << thread -> process -> get_pid();      //Fixme
+        cout << "Thread " << thread -> get_id() + 1  << " in process " << thread -> process -> get_pid();
         cout << "[" << Process::get_type_name(thread -> process -> get_type()) << "]" << endl;
         cout << message << endl;
         cout << endl;
