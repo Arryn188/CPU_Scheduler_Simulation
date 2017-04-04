@@ -88,8 +88,19 @@ void opts(int argc, char **argv, bool *perThread, bool *verbose, string *algorit
 }
 
 Scheduler* getScheduler(string &algorithm) {
-	if (algorithm == "FCFS")
+	if (algorithm == "FCFS") {
 		return new FCFSScheduler();
-	else 
-		return NULL;
+	}
+    else if (algorithm == "RR"){
+		//return new RRScheduler();
+    }
+    else if (algorithm == "PRIORITY"){
+        //return new PriorityScheduler();
+    }
+    else if (algorithm == "CUSTOM"){
+        //return new CustomScheduler();
+    }
+    else {
+        return NULL;
+    }
 }
