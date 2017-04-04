@@ -3,6 +3,9 @@
 //
 #include "simulation.h"
 #include "fcfsscheduler.h"
+#include "rrscheduler.h"
+#include "priorityscheduler.h"
+
 #include <getopt.h>
 
 using namespace std;
@@ -92,10 +95,10 @@ Scheduler* getScheduler(string &algorithm) {
 		return new FCFSScheduler();
 	}
     else if (algorithm == "RR"){
-		//return new RRScheduler();
+		return new RRScheduler();
     }
     else if (algorithm == "PRIORITY"){
-        //return new PriorityScheduler();
+        return new PriorityScheduler();
     }
     else if (algorithm == "CUSTOM"){
         //return new CustomScheduler();
