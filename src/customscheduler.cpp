@@ -40,5 +40,5 @@ void CustomScheduler::enqueue(const Event* event, Thread* thread){
     newQ = (newQ >= NUM_Q ? NUM_Q - 1 : newQ);
     queues[newQ].push(thread);
 
-    process_ids[thread -> process -> get_pid][thread -> get_id()] = newQ;
+    process_ids[thread -> process -> get_pid()][thread -> get_id()] = newQ;
 }

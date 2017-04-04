@@ -6,6 +6,7 @@
 #define SCHED_CUSTOMSCHEDULER_H
 
 #include "scheduler.h"
+#include <map>
 
 using namespace std;
 

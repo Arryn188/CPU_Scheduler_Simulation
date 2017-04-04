@@ -5,7 +5,7 @@
 #include "fcfsscheduler.h"
 #include "rrscheduler.h"
 #include "priorityscheduler.h"
-
+#include "customscheduler.h"
 #include <getopt.h>
 
 using namespace std;
@@ -101,7 +101,7 @@ Scheduler* getScheduler(string &algorithm) {
         return new PriorityScheduler();
     }
     else if (algorithm == "CUSTOM"){
-        //return new CustomScheduler();
+        return new CustomScheduler();
     }
     else {
         return NULL;
