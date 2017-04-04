@@ -59,8 +59,15 @@ I spent approximately 25 hours on this project total
 
 
 ----------------------------------- A short essay on the custom scheduling algorithm -----------------------------------
-
-
-
-
+The custom scheduling algorithm that I have decided to implement in this project is an upgraded Multilevel Feedback
+Queue. Initially, higher priority processes are placed in the highest of the 6 queues (1) and lower priority processes are
+placed in the lower queues (queue 6 is the lowest priority). My custom algorithm has been implemented in order to optimize
+turnaround time as well as response time for CPU bound processes. My algorithm uses preemption to create a more fair
+algorithm than the average multilevel feedback queue algorithm. The highest level queued threads recieve the greatest 
+amount of time on the processor while lower level queues have a shorter amount of time. This is so that CPU-bound processes
+do not dominate the CPU by making shorter processes not able to finish. When originally queued, threads of the SYSTEM type
+are given a higher priority but can fall farther down to other queues if they are preempted. This means that processes that
+are preemptive are penalized. However, processes may be starved in there are many shorter processes in the queue because
+CPU intensive processes in lower queues are only chosen if higher queues are empty. However, this scheduling algorithm is 
+a fair algorithm because it balances turnaround time and priority.
 ------------------------------------------------------------------------------------------------------------------------
